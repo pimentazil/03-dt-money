@@ -56,17 +56,26 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
 
     async function createTransaction(data: CreateTransactionInput) {
         const { Descricao, Preco, Categoria, Tipo } = data;
-
+    
         const response = await api.post('Transacao', {
             Descricao,
             Preco,
             Categoria,
             Tipo,
-            Data: new Date()
-        })
-
-        setTransactions(state => [response.data, ...state]);
-    }
+            Data: new Date().toISOString(), 
+        });
+    
+        const formattedTransaction: Transaction = {
+            Id: response.data.id,
+            Descricao: response.data.Descricao,
+            Preco: response.data.Preco,
+            Tipo: response.data.Tipo,
+            Categoria: response.data.Categoria,
+            Data: new Date(response.data.Data).toISOString(), 
+        };
+    
+        setTransactions((state) => [formattedTransaction, ...state]);
+    }    
 
     useEffect(() => {
         fetchTransactions();
@@ -80,7 +89,6 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
         );
     }
     
-
     return (
         <TransactionsContext.Provider value={{
             transactions,

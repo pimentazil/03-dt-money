@@ -7,9 +7,14 @@ import { TransactionsContext } from "../../contexts/TransactionsContext";
 import { dateFormatter, princeFormatter } from "../../utils/formatter";
 import { Trash } from "phosphor-react";
 
-
 export function Transactions() {
-    const { transactions, deleteTransaction } = useContext(TransactionsContext)
+    const { transactions, deleteTransaction } = useContext(TransactionsContext);
+
+    const sortedTransactions = [...transactions].sort((a, b) => {
+        const dateA = new Date(a.Data).getTime();
+        const dateB = new Date(b.Data).getTime();
+        return dateB - dateA; 
+    });
 
     return (
         <div>
@@ -21,29 +26,34 @@ export function Transactions() {
 
                 <TransactionsTable>
                     <tbody>
-                        {transactions.map(transaction => {
+                        {sortedTransactions.map(transaction => {
+                            const isDateValid = transaction.Data && !isNaN(new Date(transaction.Data).getTime());
+                            const formattedDate = isDateValid
+                                ? dateFormatter.format(new Date(transaction.Data))
+                                : "Data Inválida";
+
                             return (
                                 <tr key={transaction.Id}>
                                     <td width="50%">{transaction.Descricao}</td>
                                     <td>
                                         <PriceHighlight variant={transaction.Tipo}>
-                                            {transaction.Tipo == 'outcome' && '- '}
+                                            {transaction.Tipo === "outcome" && "- "}
                                             {princeFormatter.format(transaction.Preco)}
                                         </PriceHighlight>
                                     </td>
                                     <td>{transaction.Categoria}</td>
-                                    <td>{dateFormatter.format(new Date(transaction.Data))}</td>
+                                    <td>{formattedDate}</td>
                                     <td>
                                         <strong>
                                             <Trash size={20} onClick={() => deleteTransaction(transaction.Id)} />
                                         </strong>
                                     </td>
                                 </tr>
-                            )
+                            );
                         })}
                     </tbody>
                 </TransactionsTable>
             </TransactionsContainer>
         </div>
-    )
+    );
 }

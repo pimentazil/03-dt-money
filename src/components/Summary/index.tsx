@@ -1,4 +1,4 @@
-import { ArrowCircleDown, ArrowCircleUp, CurrencyDollar } from "phosphor-react";
+import { ArrowCircleDown, ArrowCircleUp, Wallet } from "phosphor-react";
 import { SummaryCard, SummaryContainer } from "./styles";
 import { princeFormatter } from "../../utils/formatter";
 import { useSummary } from "../../hooks/useSummary";
@@ -29,7 +29,7 @@ export function Summary() {
             <SummaryCard variant="green">
                 <header>
                     <span>Total</span>
-                    <CurrencyDollar size={32} color="#fff" />
+                    <Wallet size={32} color="#fff" />
                 </header>
                 <strong>{princeFormatter.format(summary.total)}</strong>
 
